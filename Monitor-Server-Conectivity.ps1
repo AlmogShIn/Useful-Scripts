@@ -6,16 +6,16 @@ $path = "C:\Users\ad_ashtaigm\Documents\log.csv"
 
 while ($true){
     #Test conecticity
+    $time = (get-date).ToUniversalTime()
     $res = Test-Connection -ComputerName 'corp'-Quiet
     
     #If the ping faild
     if($res -eq $false){
-        $time = (get-date).ToUniversalTime()
         Add-Content -Path $path -Value "Disconnected, $($time)"
         Write-Host "Dis"
     }
     else{
-        Write-Host "Online"
+        Write-Host "Online - $($time)"
     }
     Start-Sleep -Seconds 90
 }
