@@ -1,3 +1,3 @@
 # Useful-Scripts
 
-## In this repesit you will find usefull scripts for our daliy work
+## In this repository you will find usefull scripts for our daliy work
