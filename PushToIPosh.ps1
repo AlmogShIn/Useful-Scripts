@@ -18,11 +18,10 @@ Added:
 
 '@
 
-
 Function Get-EnviVariable {
     <#
     .SYNOPSIS
-        Return an hashtable obeject with the enviermnet variable details that stored in AzureAutomation Variable dbo.
+        Return an hashtable obeject with the enviermnet variable Value that stored in AzureAutomation Variable dbo.
 
     .DESCRIPTION
         The variable name is received, and the variable details are returned as hashtable obeject.
@@ -34,7 +33,7 @@ Function Get-EnviVariable {
        The Variable name to look for.
 
     .PARAMETER ListAll
-       Boolean flag, called all variables will return
+       Boolean flag, When called all variables will return in the 2nd place in the object.
 
     .EXAMPLE
         PS C:\>   Get-EnviVariable -VariableName 'Server-EOL-Instance'
@@ -42,7 +41,7 @@ Function Get-EnviVariable {
     .EXAMPLE
         PS C:\>  $result =  Get-EnviVariable -VariableName 'Server-EOL-Instance' -ListAll
 
-         #Use $result."All Variables" to get the all variable
+        #Use $result."All Variables" to get the all variable
 
         #Output:
 
@@ -51,24 +50,21 @@ Function Get-EnviVariable {
         Name                           Value
         ----                           -----
         All Variables                  {Automation-AzureAutomation-LongRunningRunbookExcludeList, Automation-Cobbler-Instance, Automation-DefaultAutomationAccount, Automation-Cobbler-DBName...}
-        Server-EOL-Instance            System.Data.DataRow
+        Server-EOL-Instance            orchestrator-mysql.intel.com
 
     .EXAMPLE
 
         $result = Get-EnviVariable -VariableName 'Server-EOL-Instance'
 
-        #Use $result.Values to get the variable data
+        #How to Use :
+        $result.Values to get the variable data
 
         $result.Values
 
         #Output:
-
-        Name             : Server-EOL-Instance
-        Value            : orchestrator-mysql.intel.com
-        Encrypted        : False
-        CreationTime     : 4/18/2022 4:13:33 PM
-        LastModifiedTime : 6/8/2022 3:05:07 PM
-        Description      : Server EOL MySQL Instance
+        Name                           Value
+        ----                           -----
+        Server-EOL-Instance            orchestrator-mysql.intel.com
 
     .NOTES
         Additional information about the function.
@@ -96,13 +92,6 @@ Function Get-EnviVariable {
 
     #Set the query for the reqested varible/s
     $ReqVarQuery = "SELECT *
-	Added:
-    Get-EnviVariable
-    - Use to easily retrive environment varibele that store on AzureAutomation Variable dbo.
-    - Work in both environment.
-    - Easy to use and imploment in exsiting automation
-
-
     FROM [AzureAutomation_Variable]
     WHERE [Name] like '$($VariableName)'"
 
@@ -205,6 +194,7 @@ Path                               TargetPath                           State  R
                             $dfsPath = $dfsPath -ireplace "\\\\$($match.Groups["Domain"].Value)$($match.Groups["DomainSuffix"].Value)\\ec\\Users\\$($match.Groups["Rest"].Value)", "\\$($match.Groups["Domain"].Value)$($match.Groups["DomainSuffix"].Value)\EC-Users\$($match.Groups["Rest"].Value)"
                         }
                     }
+                    #Print the new DFS path was found.
                     $dfsPath
                 }
             }
@@ -248,7 +238,7 @@ Path                               TargetPath                           State  R
     process {
         $Path | . {
             process {
-                #Get the real path
+                #Get the real DFS path
                 [string] $dfsPath = Convert-DFSPathToRealDFSPath -Path $_
 
                 #Display the Get-DfsnFolderTarget command with parameters that would have been executed.
@@ -256,13 +246,14 @@ Path                               TargetPath                           State  R
                     "WhatIf: Get-DfsnFolderTarget -Path $dfsPath"
                 }
                 else {
+                    #In case Verbose is not SilentlyContinue
                     if ($VerbosePreference -ne 'SilentlyContinue') {
                         Write-Verbose "$([DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss")) Executing: Get-DfsnFolderTarget -Path $dfsPath"
                     }
                     $err = $null
                     #Get the dfsn folder from the real path
                     Get-DfsnFolderTarget -Path $dfsPath -ErrorAction SilentlyContinue -ErrorVariable err
-                    #print err
+                    #If error found
                     if ($err -ne $null) {
                         "Error: $(($err.Exception.Message.Trim()) -join "`r`n")"
                     }
@@ -272,4 +263,4 @@ Path                               TargetPath                           State  R
     }
 }
 
-get-DfsFolderTarget \\ger\ec\proj\ha\computing\adaskal
+##get-DfsFolderTarget \\ger\ec\proj\ha\computing\adaskal
