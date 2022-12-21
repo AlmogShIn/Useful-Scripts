@@ -224,7 +224,7 @@ function Get-DFSFolderTarget {
 	Path of the DFS namespace folder
 
 	.PARAMETER WhatIf
-	Display the Get-DfsnFolderTarget command with parameters that would have been executed.
+	Display the  Get-DfsnFolderTarget command with parameters that would have been executed.
 
 	.EXAMPLE
 	> Get-DFSFolderTarget -Path \\ger\ec\proj\ha\computing\nts
